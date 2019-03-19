@@ -1,0 +1,140 @@
+﻿; Współpraca Natalia Turek, Łukasz Jagnow, Marcin Binkowski
+
+a)
+•(map f (append xs ys))
+
+Niech xs i ys będą dowolnymi listami (tj. (list? xs) i (list? ys) są prawdą).
+Czemu jest wtedy równe:
+• (map f (append xs ys)) (dla pewnej procedury jednoargumentowej f)?
+
+Pokażemy, że ∀ xs, ys : (list? xs) i (list? ys) zachodzi:
+(map f (append xs ys)) == (append(map f xs) (map f ys))
+
+d-d indukcyjny:
+
+Będziemy korzystać z twierdzenia o indukcji dla list:
+Dla dowolnej własności P, jeśli:
+• P(null) zachodzi,
+• Dla dowolnych y, ys, jeśli (list? ys) i P(ys), to P((cons y ys)) zachodzi
+To wtedy dla dowolnego xs jeśli (list? xs), to P(xs).
+
+Pomocniczo przyjmiemy nazwę:
+P(_) = ∀ ys:(list? ys), (map f(append _ ys)) == (append(map f _) (map f ys)
+
+Zatem chcemy udowodnić ∀ xs: (list? xs) P(xs).
+Z wcześniej wspomnianego twierdzenia o indukcji wystarczy, że pokażemy:
+P('()) ∧ [∀ ks, x: (list? ks) ∧ P (ks) ⇒ P(cons x ks)]
+
+Baza indukcji:
+Musimy pokazać
+P('()), czyli, że ∀ ys:(list? ys), (map f(append '() ys)) == (append (map f '()) (map f ys))
+
+Weźmy dowolną listę ys oraz niech:
+L = (map f(append '() ys))
+P = (append(map f '())(map f ys))
+
+L == (map f ys) ;; z definicji append (dodawanie pustej listy do listy ys zwróci ys)
+
+
+P == (append '() (map f ys)) ;; z definicji map
+  == (map f ys) ;; z definicji append
+  == L
+
+Krok indukcyjny:
+Pokażemy, ∀ ks, x: (list? ks) ∧ P (ks) ⇒ P(cons x ks)
+Weźmy dowolną listę ks i dowolne x.
+Zakładamy, że P(ks).
+Pokażemy, że P(cons x ks), czyli:
+(map f(append (cons x ks) ys)) == (append (map f (cons x ks)) (map f ys))
+
+Weźmy dowolną listę ys i niech:
+L = (map f(append (cons x ks) ys))
+P = (append (map f (cons x ks)) (map f ys))
+
+L == (map f (cons x (append ks ys))) ;; z definicji append
+  == (cons (f x) (map f (append ks ys)) ;; z definicji map
+
+P == (append (cons (f x) (map f ks)) (map f ys)) ;; z definicji map
+  == (cons (f x) (append (map f ks) (map f ys))) ;; z definicji append
+  == (cons (f x) (map f (append ks ys))) ;; z założenia indukcyjnego
+  == L
+
+Zatem na mocy twierdzenia o indukcji dla list:
+  ∀ xs: (list? xs) P(xs).
+
+
+
+b) 
+•(filter p? (append xs ys))
+
+Niech xs i ys będą dowolnymi listami (tj. (list? xs) i (list? ys) są prawdą).
+Czemu jest wtedy równe:
+• (filter p? (append xs ys)) (dla pewnego predykatu jednoargumentowego p?)?
+
+Pokażemy, że ∀ xs, ys : (list? xs) i (list? ys) zachodzi:
+(filter p? (append xs ys)) == (append(filter p? xs) (filter p? ys))
+
+d-d indukcyjny:
+
+Będziemy korzystać z twierdzenia o indukcji dla list:
+Dla dowolnej własności P, jeśli:
+• P(null) zachodzi,
+• Dla dowolnych y, ys, jeśli (list? ys) i P(ys), to P((cons y ys)) zachodzi
+To wtedy dla dowolnego xs jeśli (list? xs), to P(xs).
+
+Pomocniczo przyjmiemy nazwę:
+P(_) = ∀ ys:(list? ys), (filter p? (append _ ys)) == (append(filter p? _) (filter p? ys)
+
+Zatem chcemy udowodnić ∀ xs: (list? xs) P(xs).
+Z wcześniej wspomnianego twierdzenia o indukcji wystarczy, że pokażemy:
+P('()) ∧ [∀ ks, x: (list? ks) ∧ P (ks) ⇒ P(cons x ks)]
+
+Baza indukcji:
+Musimy pokazać
+P('()), czyli, że ∀ ys:(list? ys), (filter p? (append '() ys)) == (append (filter p? '()) (filter p? ys))
+
+Weźmy dowolną listę ys oraz niech:
+L = (filter p? (append '() ys))
+R = (append (filter p? '()) (filter p? ys))
+
+L == (filter p? ys) ;; z definicji append (dodawanie pustej listy do listy ys zwróci ys)
+
+
+R == (append '() (filter p? ys)) ;; z definicji filter
+  == (filter p? ys) ;; z definicji append
+  == L
+
+Krok indukcyjny:
+Pokażemy, ∀ ks, x: (list? ks) ∧ P(ks) ⇒ P(cons x ks)
+Weźmy dowolną listę ks i dowolne x.
+
+Zakładamy, że P(ks), czyli, że ∀ ys:(list? ys), (filter p? (append ks ys)) == (append (filter p? ks) (filter p? ys)).
+
+Pokażemy, że P(cons x ks), czyli:
+(filter p?(append (cons x ks) ys)) == (append (filter p? (cons x ks)) (filter p? ys))
+
+Weźmy dowolną listę ys i niech:
+L = (filter p?(append (cons x ks) ys))
+R = (append (filter p? (cons x ks)) (filter p? ys))
+
+L == (filter p? (cons x (append ks ys))) ;; z definicji append
+
+1. Jezeli (p? x) == #t to:
+
+L = (filter p? (cons x (append ks ys))) == (cons x (filter p?(append ks ys))) ; z definicji filter
+
+R == (append (cons x (filter p? ks)) (filter p? ys)) ; z definicji filter
+  == (cons x (append(filter p? ks) (filter p? ys))) ; z definicji append
+  == (cons x (filter p?(append ks ys))) ; z założenia indukcyjnego
+  == L 
+
+2. Jezeli (p? x) == #f to: 
+
+L == (filter p?(append ks ys)) ; z definicji filter
+
+R ==  (append (filter p? ks)) (filter p? ys)) ; z definicji filter
+  == L ; Z założenia indukcyjnego
+
+Zatem na mocy twierdzenia o indukcji dla list:
+  ∀ xs: (list? xs) P(xs).
+
